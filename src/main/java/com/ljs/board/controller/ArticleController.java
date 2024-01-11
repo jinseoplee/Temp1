@@ -1,8 +1,10 @@
 package com.ljs.board.controller;
 
 import com.ljs.board.dto.ArticleForm;
+import com.ljs.board.dto.CommentDto;
 import com.ljs.board.entity.Article;
 import com.ljs.board.repository.ArticleRepository;
+import com.ljs.board.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +22,9 @@ public class ArticleController {
     @Autowired
     private ArticleRepository articleRepository;
 
+    @Autowired
+    private CommentService commentService;
+
     @GetMapping("/new")
     public String newArticleForm() {
         return "articles/new";
@@ -35,7 +40,9 @@ public class ArticleController {
     @GetMapping("/{id}")
     public String show(@PathVariable Long id, Model model) {
         Article article = articleRepository.findById(id).orElse(null);
+        List<CommentDto> commentDtos = commentService.comments(id);
         model.addAttribute("article", article);
+        model.addAttribute("commentDtos", commentDtos);
         return "articles/show";
     }
 
